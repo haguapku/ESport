@@ -4,7 +4,7 @@ import com.example.esport.MyApplication;
 import com.example.esport.http.APIService;
 import com.example.esport.http.HttpCacheInterceptor;
 import com.example.esport.http.RetroficManager;
-import com.example.esport.model.Feed;
+import com.example.esport.data.model.Feed;
 
 import java.io.File;
 

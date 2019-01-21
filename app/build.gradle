@@ -20,6 +20,14 @@ android {
     dataBinding {
         enabled = true
     }
+
+    sourceSets {
+        main.res.srcDirs += 'src/main/resources'
+    }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {
@@ -31,13 +39,30 @@ dependencies {
 
     // Architecture components: ViewModel and LiveData
     implementation 'android.arch.lifecycle:extensions:1.1.1'
+    testImplementation "android.arch.core:core-testing:1.1.1"
 
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-simplexml:2.1.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
     implementation 'com.squareup.okhttp3:okhttp:3.8.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.2.0'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:3.8.1'
+
+    //RxJava2
+    implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxjavaVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxjavaAndroidVersion"
+
+    //Dagger
+    implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
+    // Dagger android
+    implementation "com.google.dagger:dagger-android-support:2.17"
+    annotationProcessor "com.google.dagger:dagger-android-processor:2.17"
 
     testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.19.0'
+    androidTestImplementation "org.mockito:mockito-android:2.13.0"
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

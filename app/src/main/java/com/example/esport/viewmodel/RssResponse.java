@@ -1,6 +1,6 @@
 package com.example.esport.viewmodel;
 
-import com.example.esport.model.Rss;
+import com.example.esport.data.model.Rss;
 
 public class RssResponse {
 

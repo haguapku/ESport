@@ -3,9 +3,8 @@ package com.example.esport.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.util.Log;
 
-import com.example.esport.model.Feed;
+import com.example.esport.data.model.Feed;
 import com.example.esport.repository.FeedRepository;
 
 import retrofit2.Call;
@@ -33,8 +32,12 @@ public class FeedViewModel extends ViewModel{
         feedRepository.loadFeedFromServer(new Callback<Feed>() {
             @Override
             public void onResponse(Call<Feed> call, Response<Feed> response) {
-                FeedResponse feedResponse = new FeedResponse(response.body(),null);
-                feedResponseMutableLiveData.postValue(feedResponse);
+                if(response.code() != 504) {
+                    FeedResponse feedResponse = new FeedResponse(response.body(), null);
+                    feedResponseMutableLiveData.postValue(feedResponse);
+                }else {
+                    feedResponseMutableLiveData.postValue(new FeedResponse(null,"No cache"));
+                }
             }
 
             @Override

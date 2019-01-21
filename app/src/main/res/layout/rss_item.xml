@@ -7,7 +7,7 @@
     <data>
         <import type="android.text.Html"/>
         <variable name="item"
-            type="com.example.esport.model.Item"/>
+            type="com.example.esport.data.model.Item"/>
     </data>
 
     <android.support.v7.widget.CardView

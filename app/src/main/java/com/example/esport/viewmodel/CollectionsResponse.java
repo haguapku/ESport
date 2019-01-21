@@ -1,6 +1,6 @@
 package com.example.esport.viewmodel;
 
-import com.example.esport.model.Service;
+import com.example.esport.data.model.Service;
 
 public class CollectionsResponse {
 

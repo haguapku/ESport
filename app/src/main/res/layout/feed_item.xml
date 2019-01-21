@@ -6,7 +6,7 @@
 
     <data>
         <variable name="entry"
-            type="com.example.esport.model.Entry"/>
+            type="com.example.esport.data.model.Entry"/>
     </data>
 
     <android.support.v7.widget.CardView

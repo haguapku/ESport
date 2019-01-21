@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.example.esport.R;
 import com.example.esport.databinding.CollectionItemBinding;
-import com.example.esport.model.Collection;
+import com.example.esport.data.model.Collection;
 import com.example.esport.util.OnItemClick;
 
 import java.util.List;

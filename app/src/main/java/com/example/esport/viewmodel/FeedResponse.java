@@ -1,6 +1,6 @@
 package com.example.esport.viewmodel;
 
-import com.example.esport.model.Feed;
+import com.example.esport.data.model.Feed;
 
 public class FeedResponse {
 

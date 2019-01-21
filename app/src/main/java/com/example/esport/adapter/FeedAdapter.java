@@ -9,9 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.esport.R;
-import com.example.esport.databinding.CollectionItemBinding;
 import com.example.esport.databinding.FeedItemBinding;
-import com.example.esport.model.Entry;
+import com.example.esport.data.model.Entry;
 import com.example.esport.util.OnItemClick;
 
 import java.util.List;

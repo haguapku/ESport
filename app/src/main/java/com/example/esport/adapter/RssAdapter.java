@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.example.esport.R;
 import com.example.esport.databinding.RssItemBinding;
-import com.example.esport.model.Item;
+import com.example.esport.data.model.Item;
 import com.example.esport.util.OnItemClick;
 
 import java.util.List;

@@ -3,10 +3,9 @@ package com.example.esport.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.util.Log;
 
-import com.example.esport.model.Item;
-import com.example.esport.model.Rss;
+import com.example.esport.data.model.Item;
+import com.example.esport.data.model.Rss;
 import com.example.esport.repository.RssRepository;
 
 import retrofit2.Call;
@@ -34,8 +33,12 @@ public class RssViewModel extends ViewModel {
         rssRepository.loadRssFromServer(new Callback<Rss>() {
             @Override
             public void onResponse(Call<Rss> call, Response<Rss> response) {
-                RssResponse rssResponse = new RssResponse(response.body(),null);
-                rssResponseMutableLiveData.postValue(rssResponse);
+                if(response.code() != 504) {
+                    RssResponse rssResponse = new RssResponse(response.body(), null);
+                    rssResponseMutableLiveData.postValue(rssResponse);
+                }else {
+                    rssResponseMutableLiveData.postValue(new RssResponse(null,"No cache"));
+                }
             }
 
             @Override

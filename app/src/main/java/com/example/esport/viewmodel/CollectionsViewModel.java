@@ -3,22 +3,35 @@ package com.example.esport.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.util.Log;
 
-import com.example.esport.model.Service;
+import com.example.esport.data.model.Collection;
+import com.example.esport.data.model.Service;
 import com.example.esport.repository.CollectionsRepository;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
+
+@Singleton
 public class CollectionsViewModel extends ViewModel{
 
+
     // The Live Data contains the fact list or error message.
-    private MutableLiveData<CollectionsResponse> collectionsResponseLiveData;
+    private MutableLiveData<CollectionsResponse> collectionsResponseLiveData = new MutableLiveData<>();
 
     // The repository for network interactions.
     private CollectionsRepository collectionsRepository;
+
+    public CompositeDisposable disposables = new CompositeDisposable();
+
+    @Inject
+    public CollectionsViewModel(CollectionsRepository collectionsRepository) {
+        this.collectionsRepository = collectionsRepository;
+    }
 
     /**
      * This method will return invoker a LiveData, with the LiveData, all the data and following update
@@ -27,12 +40,8 @@ public class CollectionsViewModel extends ViewModel{
      * @return a observable LiveData
      */
     public LiveData<CollectionsResponse> getCollectionsResponseLiveData(){
-        // If the live data is null, create a new instance.
-        if (collectionsResponseLiveData == null){
-            collectionsResponseLiveData = new MutableLiveData<>();
-            // send request to load fact list from server for the first time.
-            loadCollections();
-        }
+
+//        loadCollections();
         return collectionsResponseLiveData;
     }
 
@@ -40,27 +49,26 @@ public class CollectionsViewModel extends ViewModel{
      * Load the fact list from the server.
      */
     public void loadCollections(){
-        if (collectionsRepository == null){
-            // create network repository if it hasn't be initialized.
-            collectionsRepository = new CollectionsRepository();
-        }
 
-        // start Http request to load fact list, response will be processed by the callback.
-        collectionsRepository.loadCollectionsFromServer(new Callback<Service>() {
-            @Override
-            public void onResponse(Call<Service> call, Response<Service> response) {
-                CollectionsResponse collectionsResponse = new CollectionsResponse(response.body(),null);
-                collectionsResponseLiveData.postValue(new CollectionsResponse(response.body(),null));
-            }
+        disposables.add(collectionsRepository.loadCollectionsFromServer()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Service>() {
+                    @Override
+                    public void onSuccess(Service service) {
+                        collectionsResponseLiveData.setValue(new CollectionsResponse(service,null));
+                    }
 
-            @Override
-            public void onFailure(Call<Service> call, Throwable t) {
-                collectionsResponseLiveData.postValue(new CollectionsResponse(null,t.getMessage()));
-            }
-        });
+                    @Override
+                    public void onError(Throwable e) {
+                        collectionsResponseLiveData.setValue(new CollectionsResponse(null,e.getMessage()));
+                    }
+                }));
     }
 
-    public MutableLiveData getServiceResponse(){
-        return collectionsResponseLiveData;
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        disposables.clear();
     }
 }

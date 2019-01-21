@@ -1,7 +1,6 @@
 package com.example.esport.fragment;
 
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
@@ -11,22 +10,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.esport.MainActivity;
 import com.example.esport.R;
-import com.example.esport.adapter.CollectionsAdapter;
 import com.example.esport.adapter.FeedAdapter;
 import com.example.esport.http.RecyclerListener;
-import com.example.esport.model.Entry;
+import com.example.esport.data.model.Entry;
 import com.example.esport.util.OnItemClick;
-import com.example.esport.viewmodel.CollectionsResponse;
-import com.example.esport.viewmodel.CollectionsViewModel;
 import com.example.esport.viewmodel.FeedResponse;
 import com.example.esport.viewmodel.FeedViewModel;
 

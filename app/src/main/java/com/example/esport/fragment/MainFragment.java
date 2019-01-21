@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,15 +18,23 @@ import android.widget.Toast;
 import com.example.esport.MainActivity;
 import com.example.esport.R;
 import com.example.esport.adapter.CollectionsAdapter;
+import com.example.esport.data.spf.MySharedPreference;
+import com.example.esport.di.Injectable;
 import com.example.esport.http.RecyclerListener;
-import com.example.esport.model.Collection;
+import com.example.esport.data.model.Collection;
 import com.example.esport.util.OnItemClick;
 import com.example.esport.viewmodel.CollectionsResponse;
 import com.example.esport.viewmodel.CollectionsViewModel;
+import com.example.esport.viewmodel.CollectionsViewModelFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class MainFragment extends Fragment implements OnItemClick {
+import javax.inject.Inject;
+
+import dagger.android.support.AndroidSupportInjection;
+
+public class MainFragment extends Fragment implements OnItemClick,Injectable {
 
     public static final String TAG = "MainFragment";
 
@@ -41,12 +48,30 @@ public class MainFragment extends Fragment implements OnItemClick {
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    /*private SharedPreferences preferences;
+
+    private SharedPreferences.Editor editor;*/
+
+    @Inject
+    MySharedPreference mySharedPreference;
+
+    @Inject
+    CollectionsViewModelFactory factory;
+
     /**
      * Get the instance of the MainFragment.
      * @return a instance of MainFragment
      */
     public static MainFragment newInstance() {
         return new MainFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        MyApplication.getInstance().getAppComponent().inject(this);
+//        AndroidSupportInjection.inject(this);
+
     }
 
     @Nullable
@@ -75,18 +100,23 @@ public class MainFragment extends Fragment implements OnItemClick {
                 swipeRefreshLayout.setRefreshing(true);
             }
         });
-        mViewModel = ViewModelProviders.of(this).get(CollectionsViewModel.class);
+        mViewModel = ViewModelProviders.of(this,factory).get(CollectionsViewModel.class);
         subscribCollections(mViewModel);
+        mViewModel.loadCollections();
         setListener(new RecyclerListener() {
             @Override
             public void refresh() {
                 mViewModel.loadCollections();
             }
         });
+
+        /*preferences = getActivity().getSharedPreferences("mypreference",Context.MODE_PRIVATE);
+        editor = preferences.edit();*/
     }
 
     @Override
     public void onAttach(Context context) {
+//        AndroidSupportInjection.inject(this);
         super.onAttach(context);
         if (context instanceof MainActivity){
             mainActivity = (MainActivity)context;
@@ -111,6 +141,14 @@ public class MainFragment extends Fragment implements OnItemClick {
                         }
                     });
                     collectionList = collectionsResponse.service.workspace.collections;
+                    saveToSharedpreference(collectionList);
+
+                    List<Collection> toBeRemovedList = new ArrayList<>();
+                    for(Collection c: collectionList)
+//                        if(preferences.getString(c.title,null).equals("unChecked"))
+                        if(mySharedPreference.getString(c.title).equals("unChecked"))
+                            toBeRemovedList.add(c);
+                    collectionList.removeAll(toBeRemovedList);
                     mAdapter.setCollections(collectionList);
                     if (mainActivity != null) mainActivity.setTitle(collectionsResponse.service.workspace.title);
                 }else if(collectionsResponse.errorMessage != null){
@@ -145,5 +183,17 @@ public class MainFragment extends Fragment implements OnItemClick {
                 recyclerListener.refresh();
             }
         });
+    }
+
+    private void saveToSharedpreference(List<Collection> list){
+
+        for(Collection c: list){
+
+           /* if(preferences.getString(c.title,null) == null)
+                editor.putString(c.title,"Checked");*/
+            if(mySharedPreference.getString(c.title) == null)
+                mySharedPreference.putString(c.title,"Checked");
+        }
+//        editor.commit();
     }
 }
