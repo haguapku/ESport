@@ -109,9 +109,6 @@ public class MainFragment extends Fragment implements OnItemClick,Injectable {
                 mViewModel.loadCollections();
             }
         });
-
-        /*preferences = getActivity().getSharedPreferences("mypreference",Context.MODE_PRIVATE);
-        editor = preferences.edit();*/
     }
 
     @Override
